@@ -2,9 +2,10 @@ import {
   fetch_all_data,
   data_loading,
   error_loading,
-  data_search,
   delete_user,
-  update_user
+  update_user,
+  delete_selected,
+  select_item,
 } from "./actionType";
 
 export const fetch_data = (data) => {
@@ -29,12 +30,7 @@ export const Error_loading = (error) => {
   };
 };
 
-export const Data_search = (data) => {
-  return {
-    type: data_search,
-    payload: data,
-  };
-};
+
 
 export const Delete_user = (data) => {
   return {
@@ -43,14 +39,26 @@ export const Delete_user = (data) => {
   };
 };
 
+export const Update_user = (data) => {
+  return {
+    type: update_user,
+    payload: data,
+  };
+};
 
-export const Update_user = (data)=>{
+export const Deleted_selected = (data) => {
+  return {
+    type: delete_selected,
+    payload: data,
+  };
+};
 
- 
-   return {
-     type: update_user,
-     payload: data
-   }
+export const Delete_all = (data) => {};
 
-
-}
+export const Select_item = (id) => {
+  // console.log(id)
+  return {
+    type: select_item,
+    payload: id,
+  };
+};

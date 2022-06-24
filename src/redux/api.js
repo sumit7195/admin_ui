@@ -1,4 +1,4 @@
-import { fetch_data,Error_loading,Data_loading } from "./actions";
+import { fetch_data,Error_loading,Data_loading,  } from "./actions"
 
 import axios from "axios";
 

@@ -13,12 +13,25 @@ export const delete_user = ()=>{
 }
 
 
-export const data_search = ()=>{
 
-    return "DATA_SEARCH"
-}
 
 
 export const update_user = ()=>{
     return "UPDATE_USER"
+}
+
+
+export const delete_selected = ()=>{
+
+    return "DELETED_SELECTED"
+
+}
+
+export const delete_all = ()=>{
+    return "DELETE_ALL"
+}
+
+
+export const select_item = ()=>{
+    return "SELECT_ITEM"
 }

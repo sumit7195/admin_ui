@@ -1,13 +1,22 @@
 import React from "react";
-import TableHeading from "./components/table_heading";
+import Content from "./components/content";
 
 
 function App() {
+
+
   return (
-<div className="App">
- <TableHeading/>
-</div>
+    <div className="App">
+      <Content />
+    </div>
   );
 }
+
+
+
+
+
+
+
 
 export default App;

@@ -1,160 +1,189 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { fetchData } from "../redux/api";
-import { Delete_user } from "../redux/actions";
-import { useEffect, useState } from "react";
+import { Delete_user,Deleted_selected } from "../redux/actions";
+
 import { useSelector, useDispatch, connect } from "react-redux";
-import { FiEdit } from "react-icons/fi";
-import { AiFillDelete } from "react-icons/ai";
+import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 
-import "./paginate.css"
-import "./content.css"
-// import { Checkbox } from "./checkbox";
-// import DeleteSelected from "./delete_selected";
-
+import swal from "sweetalert";
 
 const Content = ({ search, fetchData }) => {
-  const loading = useSelector((state) => state.loading);
-  const data = useSelector((state) => state.list);
-  const update_query = useSelector((state) => state.update);
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [pageNumber, setPageNumber] = useState(0);
-  const userPerPage = 10;
-  // const [toppings, setToppings] = useState(data);
-  let prevData = data;
- 
-  const pageVisted = pageNumber + userPerPage;
-  const pageCount = Math.ceil(data.length / userPerPage) -1 ;
+  const dispatch = useDispatch();
+  // const myRef = useRef(null);
+  const [selectedUser, setSelectedUser] = useState([]); 
 
-  const changePage = (event) => {
-    const newOffSet = (event.selected * userPerPage) % data.length;
-    setPageNumber(newOffSet);
+  const loading = useSelector((state) => state.loading);
+  const [searchEl, setSearchEl] = useState([]);
+  const data = useSelector((state) => state.list);
+  // const error = useSelector((state) => state.error);
+  const [pageNumber, setpageNumber] = useState(0);
+  const userPerPage = 10;
+  const pageVisited = pageNumber * userPerPage;
+  const pageCount = Math.ceil(data.length / userPerPage);
+  const changePage = ({ selected }) => {
+    setpageNumber(selected);
   };
 
   useEffect(() => {
     if (data.length === 0) {
       fetchData();
     }
-  }, []);
+  }, [fetchData, data.length]);
 
-  prevData = prevData.filter((e) => {
-    return (
-      e.name.includes(search) ||
-      e.email.includes(search) ||
-      e.role.includes(search)
+  const handleSearch = (search) => {
+    let newState = data;
+    // let listItem = newState.list;
+
+    let newItem = newState.filter(
+      (item) =>
+        item.name.includes(search) ||
+        item.email.includes(search) ||
+        item.role.includes(search)
     );
-  });
 
 
+    setSearchEl(newItem);
+  };
 
 
-  if (update_query.id) {
-    prevData.filter((el) => {
-      if (el.id === update_query.id) {
-        if (update_query.email) {
-          el.email = update_query.email;
-        }
+ const onCheck = (item)=>{
+    setSelectedUser([...selectedUser,item])
+ }
 
-        if (update_query.name) {
-          el.name = update_query.name;
-        }
+ const onUncheck = (item)=>{
+     let items = selectedUser.filter((el)=>  el !==item)
 
-        if (update_query.role) {
-          el.role = update_query.role;
-        }
-        return el;
-      } else {
-        return el;
-      }
-    });
-  }
+     setSelectedUser(items)
+ }
 
-  if (search) {
-    return (
-      <>
-        <tr>
-          <th>
-            {/* <input
-              type="checkbox"
-              checked={isChecked}
-              onChange={checkHandler}
-            /> */}
-          </th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Role</th>
-          <th>Actions</th>
-        </tr>
-        {prevData.map((el) => (
-          <tr key={el.id}>
-            <td>
-              
 
-            </td>
-            <td>{el.name}</td>
-            <td>{el.email}</td>
-            <td>{el.role}</td>
-            <td>
-              <FiEdit />
-              <AiFillDelete onClick={() => Delete_user(el.id)} />
-            </td>
-          </tr>
-        ))}
-      </>
-    );
+  if (loading) {
+    return <div className="loader"></div>;
   } else {
-    return loading === true ? (
-      <h1>...loading</h1>
-    ) : (
-      <>
-        <div className="table">
+    return (
+      <div className="main_div">
+        <input
+          className="input_div"
+          onChange={(e) => {
+            handleSearch(e.target.value);
+          }}
+          placeholder="Search by name,email or Role"
+        />
+
+        {data.length === 0 && <div>No Data found</div>}
+
+        <table>
           <tr>
             <th>
-              {/* <input
-                type="checkbox"
-                checked={isChecked}
-                onChange={checkHandler}
-              /> */}
+              <input type="checkbox" />
             </th>
             <th>Name</th>
             <th>Email</th>
             <th>Role</th>
             <th>Actions</th>
           </tr>
-          {prevData.slice(pageVisted, pageVisted + userPerPage).map((el, i) => (
-            <tr key={el.id}>
-              <td>
-                
-              </td>
-              <td>{el.name}</td>
-              <td>{el.email}</td>
-              <td>{el.role}</td>
-              <td>
-                <FiEdit onClick={() => navigate(`update/${el.id}`)} />
-                <AiFillDelete onClick={() => dispatch(Delete_user(el.id))} />
-              </td>
-            </tr>
-          ))}
-        </div>
 
-        <div className="main_div">
-          {" "}
-         
-          <ReactPaginate
-            previousLabel={"Previous"}
-            nextLabel={"Next"}
-            pageCount={pageCount}
-            onPageChange={changePage}
-            containerClassName={"paginationBttns"}
-            previousLinkClassName={"previousBttn"}
-            nextLinkClassName={"nextBttn"}
-            disabledClassName={"paginationDisabled"}
-            activeClassName={"paginationActive"}
-          />
-        </div>
-      </>
+          {searchEl.length !== 0
+            ? searchEl
+                .slice(pageVisited, pageVisited + userPerPage)
+                .map((item, index) => (
+                  <tr key={index}>
+                    <td>
+                      <input type="checkbox" />
+                    </td>
+                    <td>{item.name}</td>
+                    <td>{item.email}</td>
+                    <td>{item.role}</td>
+                    <td>
+                      <AiOutlineEdit
+                        className="editIcon"
+                        onClick={() => {
+                          navigate(`/update/${item.id}`);
+                        }}
+                      />
+                      <AiOutlineDelete
+                        className="deleteIcon"
+                        onClick={() => {
+                          const promise = new Promise((resolve, reject) => {
+                            resolve(dispatch(Delete_user(item.id)));
+                          });
+
+                          promise.then(() => {
+                            swal("User Deleted");
+                          });
+                        }}
+                      />
+                    </td>
+                  </tr>
+                ))
+            : data
+                .slice(pageVisited, pageVisited + userPerPage)
+                .map((item, index) => (
+                  <tr key={index}>
+                    <td>
+                      <input
+                        type="checkbox"
+                        //  ref = {myRef+item.id}
+                        id={item.id}
+                        onClick={(e) => {
+                          
+                          if(e.currentTarget.checked){
+                              onCheck(e.currentTarget.id) 
+                          }
+                          else if(!e.currentTarget.checked){
+                             onUncheck(e.currentTarget.id)
+                          }
+
+                          
+                        }}
+                      />
+                    </td>
+                    <td>{item.name}</td>
+                    <td>{item.email}</td>
+                    <td>{item.role}</td>
+                    <td>
+                      <AiOutlineEdit
+                        className="editIcon"
+                        onClick={() => {
+                          navigate(`/update/${item.id}`);
+                        }}
+                      />
+                      <AiOutlineDelete
+                        className="deleteIcon"
+                        onClick={() => {
+                          const promise = new Promise((resolve, reject) => {
+                            resolve(dispatch(Delete_user(item.id)));
+                          });
+
+                          promise.then(() => {
+                            swal("User Deleted");
+                          });
+                        }}
+                      />
+                    </td>
+                  </tr>
+                ))}
+        </table>
+        <button className="delete_selected" onClick={()=>{
+          dispatch(Deleted_selected(selectedUser));
+           setSelectedUser([])
+        
+        }}>Delete Selected</button>
+        <ReactPaginate
+          previousLabel={"Previous"}
+          nextLabel={"Next"}
+          pageCount={pageCount}
+          onPageChange={changePage}
+          containerClassName={"paginationBttns"}
+          previousLinkClassName={"previousBttn"}
+          nextLinkClassName={"nextBttn"}
+          disabledClassName={"paginationDisabled"}
+          activeClassName={"paginationActive"}
+        />
+      </div>
     );
   }
 };

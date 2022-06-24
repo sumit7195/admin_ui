@@ -3,54 +3,87 @@ import {
   data_loading,
   error_loading,
   delete_user,
-  update_user
+  delete_selected,
+  select_item,
 } from "./actionType";
 
 const initalState = {
   loading: false,
   list: [],
   error: "",
-  update: ''
+  update: "",
 };
-
 
 export const reducer = (state = initalState, action) => {
   switch (action.type) {
-    case fetch_all_data:
-            
-    return { ...state, list:action.payload.map((el)=>{
-      return {...el , checked:false}
-    }), loading: false };
+    case fetch_all_data: {
+      return {
+        ...state,
+        list: action.payload.map((el) => {
+          return { ...el, checked: false };
+        }),
+        loading: false,
+      };
+    }
 
+    // case data_search: {
+    //   let newState = state;
+    //   let listItem = newState.list;
 
-    case data_loading:
+    //   let newItem = listItem.filter(
+    //     (item) =>
+    //       item.name.includes(action.payload) ||
+    //       item.email.includes(action.payload) ||
+    //       item.role.includes(action.payload)
+    //   );
+
+    //   return { ...newState, list: newItem };
+    // }
+
+    case data_loading: {
       return { ...state, loading: true };
-
-      case error_loading:
+    }
+    case error_loading: {
       return { ...state, error: action.payload };
+    }
 
-          
-       
-    case delete_user : 
-       
-       let newData = state;
+    case delete_user: {
+      let newData = state;
 
-        let result = newData.list.filter((e)=>{
-          return e.id !== action.payload
-        })
+      let result = newData.list.filter((e) => {
+        return e.id !== action.payload;
+      });
 
-      return {...newData, list:result}
+      return { ...newData, list: result };
+    }
 
+    case delete_selected: {
+      let selected = action.payload;
+      let listItem = state;
 
-    case update_user : 
-      
-          return {...state,  update : action.payload}       
-    
-   
-    
+      let results = listItem.list.filter((el) => {
+        return selected.includes(el.id) !== true;
+      });
 
- 
-default:
+      return { ...state, list: results };
+    }
+
+    case select_item: {
+      let id = action.payload;
+      let item = state.list;
+
+      item.map((el, i) => {
+        if (el.id === id) {
+          return (el.checked = !el.checked);
+        } else {
+          return el;
+        }
+      });
+
+      return { ...state, list: item };
+    }
+
+    default:
       return state;
   }
 };
