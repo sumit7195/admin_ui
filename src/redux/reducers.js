@@ -26,19 +26,6 @@ export const reducer = (state = initalState, action) => {
       };
     }
 
-    // case data_search: {
-    //   let newState = state;
-    //   let listItem = newState.list;
-
-    //   let newItem = listItem.filter(
-    //     (item) =>
-    //       item.name.includes(action.payload) ||
-    //       item.email.includes(action.payload) ||
-    //       item.role.includes(action.payload)
-    //   );
-
-    //   return { ...newState, list: newItem };
-    // }
 
     case data_loading: {
       return { ...state, loading: true };

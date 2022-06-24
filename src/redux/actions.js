@@ -5,7 +5,7 @@ import {
   delete_user,
   update_user,
   delete_selected,
-  select_item,
+  // select_item,
 } from "./actionType";
 
 export const fetch_data = (data) => {
@@ -55,10 +55,10 @@ export const Deleted_selected = (data) => {
 
 export const Delete_all = (data) => {};
 
-export const Select_item = (id) => {
-  // console.log(id)
-  return {
-    type: select_item,
-    payload: id,
-  };
-};
+// export const Select_item = (id) => {
+//   // console.log(id)
+//   return {
+//     type: select_item,
+//     payload: id,
+//   };
+// };

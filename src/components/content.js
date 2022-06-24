@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { fetchData } from "../redux/api";
-import { Delete_user,Deleted_selected } from "../redux/actions";
+import { Delete_user, Deleted_selected } from "../redux/actions";
 
 import { useSelector, useDispatch, connect } from "react-redux";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
@@ -13,7 +13,7 @@ const Content = ({ search, fetchData }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   // const myRef = useRef(null);
-  const [selectedUser, setSelectedUser] = useState([]); 
+  const [selectedUser, setSelectedUser] = useState([]);
 
   const loading = useSelector((state) => state.loading);
   const [searchEl, setSearchEl] = useState([]);
@@ -44,21 +44,18 @@ const Content = ({ search, fetchData }) => {
         item.role.includes(search)
     );
 
-
     setSearchEl(newItem);
   };
 
+  const onCheck = (item) => {
+    setSelectedUser([...selectedUser, item]);
+  };
 
- const onCheck = (item)=>{
-    setSelectedUser([...selectedUser,item])
- }
+  const onUncheck = (item) => {
+    let items = selectedUser.filter((el) => el !== item);
 
- const onUncheck = (item)=>{
-     let items = selectedUser.filter((el)=>  el !==item)
-
-     setSelectedUser(items)
- }
-
+    setSelectedUser(items);
+  };
 
   if (loading) {
     return <div className="loader"></div>;
@@ -129,15 +126,11 @@ const Content = ({ search, fetchData }) => {
                         //  ref = {myRef+item.id}
                         id={item.id}
                         onClick={(e) => {
-                          
-                          if(e.currentTarget.checked){
-                              onCheck(e.currentTarget.id) 
+                          if (e.currentTarget.checked) {
+                            onCheck(e.currentTarget.id);
+                          } else if (!e.currentTarget.checked) {
+                            onUncheck(e.currentTarget.id);
                           }
-                          else if(!e.currentTarget.checked){
-                             onUncheck(e.currentTarget.id)
-                          }
-
-                          
                         }}
                       />
                     </td>
@@ -167,11 +160,15 @@ const Content = ({ search, fetchData }) => {
                   </tr>
                 ))}
         </table>
-        <button className="delete_selected" onClick={()=>{
-          dispatch(Deleted_selected(selectedUser));
-           setSelectedUser([])
-        
-        }}>Delete Selected</button>
+        <button
+          className="delete_selected"
+          onClick={() => {
+            dispatch(Deleted_selected(selectedUser));
+            setSelectedUser([]);
+          }}
+        >
+          Delete Selected
+        </button>
         <ReactPaginate
           previousLabel={"Previous"}
           nextLabel={"Next"}
