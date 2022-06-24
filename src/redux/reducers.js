@@ -5,6 +5,7 @@ import {
   delete_user,
   delete_selected,
   select_item,
+  update_user,
 } from "./actionType";
 
 const initalState = {
@@ -25,7 +26,6 @@ export const reducer = (state = initalState, action) => {
         loading: false,
       };
     }
-
 
     case data_loading: {
       return { ...state, loading: true };
@@ -53,6 +53,33 @@ export const reducer = (state = initalState, action) => {
       });
 
       return { ...state, list: results };
+    }
+
+    case update_user: {
+      let { name, email, role, id } = action.payload;
+
+      let newitem = state.list;
+
+      newitem.map((item) => {
+        if (item.id === id) {
+          if (name) {
+            item.name = name;
+          }
+
+          if (email) {
+            item.email = email;
+          }
+
+          if (role) {
+            item.role = role;
+          }
+          return item;
+        } else {
+          return item;
+        }
+      });
+
+      return { ...state, list: newitem };
     }
 
     case select_item: {
