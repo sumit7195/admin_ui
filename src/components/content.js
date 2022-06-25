@@ -48,10 +48,12 @@ const Content = ({ search, fetchData }) => {
   };
 
   const onCheck = (item) => {
+    console.log(selectedUser);
     setSelectedUser([...selectedUser, item]);
   };
 
   const onUncheck = (item) => {
+    console.log(selectedUser);
     let items = selectedUser.filter((el) => el !== item);
 
     setSelectedUser(items);
@@ -152,7 +154,7 @@ const Content = ({ search, fetchData }) => {
                           });
 
                           promise.then(() => {
-                            swal("User Deleted");
+                            swal(" User",  "Deleted Successfully","success");
                           });
                         }}
                       />
@@ -165,6 +167,13 @@ const Content = ({ search, fetchData }) => {
           onClick={() => {
             dispatch(Deleted_selected(selectedUser));
             setSelectedUser([]);
+            document
+              .querySelectorAll("input[type='checkbox']")
+              .forEach((item) => {
+                item.checked = false;
+              });
+
+              swal('user data','Deleted Successfully','success' )
           }}
         >
           Delete Selected
