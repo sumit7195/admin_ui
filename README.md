@@ -6,9 +6,8 @@ and following operations can be done
 like:-
 1.  can delete the users
 2.  can Update the users
-3.  can delete users.
-4.  can delete multiple use
-5.  search user based on name, role, and email.
+3.  can delete multiple users
+4.  search user based on name, role, and email.
 
 
 Tech stack Used:-
