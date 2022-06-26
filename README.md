@@ -1,7 +1,7 @@
 
 
 ADMIN UI:-
-It is admin up app in which we can manage the users.
+It is admin UI app in which we can manage the users.
 and following operations can be done
 like:-
 1.  can delete the users
